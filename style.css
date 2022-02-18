@@ -3,14 +3,37 @@
 body {
    margin: 0;
    font-family: 'Fira Sans Condensed', sans-serif;
+   background: #efefef;
 }
 
 svg {
    overflow: visible;
 }
 
-.tooltip > p {
+h1, p {
    margin: 0;
+}
+
+.chart-outer, .chart {
+   width: fit-content;
+   margin-bottom: 1rem;
+   background: #fff;
+}
+
+.chart-outer {
+   margin: 1rem auto;
+   padding: 0.75rem 0;
+   border-radius: 10px;
+   box-shadow: 3px 3px 20px #adadad98;
+}
+
+.title-container {
+   margin-bottom: 1.5rem;
+   text-align: center;
+}
+
+.title {
+   margin-bottom: 0.5rem;
 }
 
 .tooltip {

@@ -5,8 +5,8 @@ const FILES = [
 ];
 
 // setup chart
-const height = 700;
-const width = 1260;
+const height = 600;
+const width = 960;
 const chartContainer = d3.select(".chart");
 const chart = chartContainer.append("svg").attr("height", height).attr("width", width);
 
@@ -16,13 +16,28 @@ const tip = d3
    .attr("class", "tooltip")
    .attr("id", "tooltip")
    .direction("n")
-   .offset([20, 120])
+   .offset([16, 110])
    .html((d) => {
       d3.select("#tooltip").attr("data-education", d.percent);
       return `
          <p>${d.county}, ${d.state}: ${d.percent}%</p>
       `;
    });
+
+// chart title and description
+const titleContainer = d3
+   .select(".chart-outer")
+   .append("div")
+   .attr("class", "title-container")
+   .lower();
+titleContainer
+   .append("h1")
+   .attr("id", "title")
+   .attr("class", "title")
+   .text("United States Educational Attainment");
+titleContainer.append("p").attr("id", "description").text(`
+   Percentage of adults age 25 and older with a bachelor's degree or higher (2010-2014)
+`);
 
 // required for converting topojson data to a svg path property
 const path = d3.geoPath();
@@ -68,15 +83,18 @@ Promise.all([d3.json(FILES[0]), d3.json(FILES[1])]).then((data) => {
       .on("mouseout", tip.hide);
 
    // draw the legend
-   const legendScale = d3.scaleLinear().domain([minData, maxData]).range([560, 860]);
+   const legendScale = d3.scaleLinear().domain([minData, maxData]).range([550, 850]);
    const legendAxis = d3
       .axisBottom(legendScale)
       .tickValues(color.domain())
       .tickSize(15)
       .tickFormat((d) => `${Math.round(d)}%`);
 
+   chart.append("rect").attr("width", 340).attr("height", 70).attr("x", 530).attr("y", -10).style("fill", "#eee").style("stroke", "black").style("stroke-width", "1px")
    const legendContainer = chart.append("g").attr("transform", `translate(0, 20)`);
    const legend = legendContainer.append("g").attr("id", "legend");
+
+   legendContainer.append("g").append("text").attr("x", 678).attr("y", -8).text("Legend").style("text-decoration", "underline").style("font-size", "0.85rem")
 
    legend
       .selectAll("rect")
