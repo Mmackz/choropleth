@@ -39,6 +39,19 @@ titleContainer.append("p").attr("id", "description").text(`
    Percentage of adults age 25 and older with a bachelor's degree or higher (2010-2014)
 `);
 
+// add source
+chartContainer
+   .append("div")
+   .attr("class", "source")
+   .style("text-align", "right")
+   .text("Source: ")
+   .append("a")
+   .attr(
+      "href",
+      "https://www.ers.usda.gov/data-products/county-level-data-sets/download-data.aspx"
+   )
+   .text("USDA Economic Research Service");
+
 // required for converting topojson data to a svg path property
 const path = d3.geoPath();
 
