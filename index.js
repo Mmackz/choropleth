@@ -10,6 +10,20 @@ const width = 1260;
 const chartContainer = d3.select(".chart");
 const chart = chartContainer.append("svg").attr("height", height).attr("width", width);
 
+// tooltip
+const tip = d3
+   .tip()
+   .attr("class", "tooltip")
+   .attr("id", "tooltip")
+   .direction("n")
+   .offset([20, 120])
+   .html((d) => {
+      d3.select("#tooltip").attr("data-education", d.percent);
+      return `
+         <p>${d.county}, ${d.state}: ${d.percent}%</p>
+      `;
+   });
+
 // required for converting topojson data to a svg path property
 const path = d3.geoPath();
 
@@ -22,6 +36,9 @@ Promise.all([d3.json(FILES[0]), d3.json(FILES[1])]).then((data) => {
       .scaleThreshold()
       .domain(d3.range(minData, maxData + 1, (maxData - minData) / 8))
       .range(d3.schemeBuGn[9]);
+
+   // initialize tooltips
+   chart.call(tip);
 
    // draw the map
    chart
@@ -39,7 +56,16 @@ Promise.all([d3.json(FILES[0]), d3.json(FILES[1])]).then((data) => {
       )
       .attr("fill", (d) =>
          color(education.find((item) => item.fips === d.id).bachelorsOrHigher)
-      );
+      )
+      .on("mouseover", (event, data) => {
+         const {
+            area_name: county,
+            state,
+            bachelorsOrHigher: percent
+         } = education.find((d) => d.fips === data.id);
+         tip.show({ county, state, percent }, event.target);
+      })
+      .on("mouseout", tip.hide);
 
    // draw the legend
    const legendScale = d3.scaleLinear().domain([minData, maxData]).range([560, 860]);
