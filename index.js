@@ -21,12 +21,11 @@ Promise.all([d3.json(FILES[0]), d3.json(FILES[1])]).then((data) => {
    const color = d3
       .scaleThreshold()
       .domain(d3.range(minData, maxData + 1, (maxData - minData) / 8))
-      .range(d3.schemeBlues[9]);
+      .range(d3.schemeBuGn[9]);
 
    // draw the map
    chart
       .append("g")
-      .attr("class", "counties")
       .selectAll("path")
       .data(topojson.feature(map, map.objects.counties).features)
       .enter()
@@ -51,26 +50,31 @@ Promise.all([d3.json(FILES[0]), d3.json(FILES[1])]).then((data) => {
       .tickFormat((d) => `${Math.round(d)}%`);
 
    const legendContainer = chart.append("g").attr("transform", `translate(0, 20)`);
-   const legend = legendContainer.append("g");
+   const legend = legendContainer.append("g").attr("id", "legend");
 
    legend
       .selectAll("rect")
       .data(
-         color.range().slice(1).map((d) => {
-            colorData = color.invertExtent(d);
-            if (colorData[1] == undefined) {
-               colorData[1] = maxData
-            }
-            return colorData;
-         })
+         color
+            .range()
+            .slice(1)
+            .map((d) => {
+               colorData = color.invertExtent(d);
+               if (colorData[1] == undefined) {
+                  colorData[1] = maxData;
+               }
+               return colorData;
+            })
       )
       .enter()
       .append("rect")
-      .attr("fill", "red")
-      .attr("width", d => legendScale(d[1]) - legendScale(d[0]))
+      .attr("width", (d) => legendScale(d[1]) - legendScale(d[0]))
       .attr("height", 10)
-      .attr("x", d => legendScale(d[0]))
-      .attr("fill", d => color(d[0])).style("stroke", "black").style("stroke-width", 1);
+      .attr("x", (d) => legendScale(d[0]))
+      .attr("fill", (d) => color(d[0]))
+      .style("stroke", "black")
+      .style("stroke-width", 1);
 
-   legend.call(legendAxis)
+   // apply axis labels last, otherwise will be overlapped
+   legend.call(legendAxis);
 });
