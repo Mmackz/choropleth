@@ -82,6 +82,19 @@ Promise.all([d3.json(FILES[0]), d3.json(FILES[1])]).then((data) => {
       })
       .on("mouseout", tip.hide);
 
+   // apply state borders
+   chart
+      .append("g")
+      .lower()
+      .selectAll("path")
+      .data(topojson.feature(map, map.objects.states).features)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .style("fill", "transparent")
+      .style("stroke", "black")
+      .style("stroke-width", "1px");
+
    // draw the legend
    const legendScale = d3.scaleLinear().domain([minData, maxData]).range([550, 850]);
    const legendAxis = d3
@@ -90,11 +103,26 @@ Promise.all([d3.json(FILES[0]), d3.json(FILES[1])]).then((data) => {
       .tickSize(15)
       .tickFormat((d) => `${Math.round(d)}%`);
 
-   chart.append("rect").attr("width", 340).attr("height", 70).attr("x", 530).attr("y", -10).style("fill", "#eee").style("stroke", "black").style("stroke-width", "1px")
+   chart
+      .append("rect")
+      .attr("width", 340)
+      .attr("height", 70)
+      .attr("x", 530)
+      .attr("y", -10)
+      .style("fill", "#eee")
+      .style("stroke", "black")
+      .style("stroke-width", "1px");
    const legendContainer = chart.append("g").attr("transform", `translate(0, 20)`);
    const legend = legendContainer.append("g").attr("id", "legend");
 
-   legendContainer.append("g").append("text").attr("x", 678).attr("y", -8).text("Legend").style("text-decoration", "underline").style("font-size", "0.85rem")
+   legendContainer
+      .append("g")
+      .append("text")
+      .attr("x", 678)
+      .attr("y", -8)
+      .text("Legend")
+      .style("text-decoration", "underline")
+      .style("font-size", "0.85rem");
 
    legend
       .selectAll("rect")
